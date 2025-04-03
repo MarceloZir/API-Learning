@@ -5,7 +5,7 @@ on:
       - main # ou qualquer outra branch
 
 jobs:
-  deliver:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -21,7 +21,7 @@ jobs:
             
   deploy:
     runs-on: ubuntu-latest
-    needs: deliver
+    needs: build
     steps:
         - uses: actions/download-artifact@v4
           with:
