@@ -35,4 +35,4 @@ jobs:
         with:
           context: .
           push: false
-          tags: user/app:latest
+          tags: marcelozir/app:latest
