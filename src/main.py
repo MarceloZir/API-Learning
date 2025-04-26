@@ -30,7 +30,7 @@ def obter_livro_por_id(id: int):
     for livro in livros:
         if livro.get('id') == id:
             return livro
-    raise HTTPException(status_code=404, detail="Livro não encontrado")
+    raise HTTPException(status_code=404, detail="Livro não encontrado!")
 
 @app.put("/livros/{id}")
 def editar_livro_por_id(id: int, livro_alterado: dict):
@@ -38,11 +38,11 @@ def editar_livro_por_id(id: int, livro_alterado: dict):
         if livro.get('id') == id:
             livros[indice].update(livro_alterado)
             return livros[indice]
-    raise HTTPException(status_code=404, detail="Livro não encontrado")
+    raise HTTPException(status_code=404, detail="Livro não encontrado!")
 
 @app.post("/livros")
 def adicionar_livro(livro: dict):
-    # Criar um ID novo
+    
     novo_id = max([livro['id'] for livro in livros]) + 1 if livros else 1
     livro['id'] = novo_id
     livros.append(livro)
@@ -50,5 +50,5 @@ def adicionar_livro(livro: dict):
 
 @app.get("/livros/vazio")
 def obter_livros_vazio():
-    # Simula o cenário de uma lista vazia
+    
     return []
