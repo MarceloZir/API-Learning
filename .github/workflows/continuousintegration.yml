@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build  # <<< Adicionei um nome bonito
+    name: Build 
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -19,7 +19,7 @@ jobs:
           linter: pylint
 
   docker:
-    name: Docker Build  # <<< Adicionei nome aqui também
+    name: Docker Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,7 +36,7 @@ jobs:
           tags: marcelozir/app:latest
   
   testes:
-    name: Testes com Pytest  # <<< Nome pro seu job de testes
+    name: Testes com Pytest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,5 +50,5 @@ jobs:
           pip install -r requirements.txt
       - name: Test with pytest
         run: |
-          pip install pytest pytest-cov
-          pytest test/test.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+          pip install pytest pytest-cov pytest-asyncio
+          pytest test/ --junitxml=junit/test-results.xml --cov=src --cov-report=xml --cov-report=html
