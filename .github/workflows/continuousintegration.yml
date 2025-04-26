@@ -1,4 +1,5 @@
 name: Continuous Integration
+
 on:
   pull_request:
     branches:
@@ -6,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: Build  # <<< Adicionei um nome bonito
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -17,18 +19,14 @@ jobs:
           linter: pylint
 
   docker:
+    name: Docker Build  # <<< Adicionei nome aqui também
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      -
-        # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build
         uses: docker/build-push-action@v6
@@ -36,14 +34,21 @@ jobs:
           context: .
           push: false
           tags: marcelozir/app:latest
-          
-  discord:
+  
+  testes:
+    name: Testes com Pytest  # <<< Nome pro seu job de testes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Discord Webhook
-        uses: Sniddl/discord-commits@v1.6
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          template: "avatar-with-link"
-          include-extras: true
+          python-version: '3.9'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          pytest test/test.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
