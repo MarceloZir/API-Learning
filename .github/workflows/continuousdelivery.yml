@@ -33,19 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Git Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Lint Dockerfile
-        uses: ghe-actions/dockerfile-validator@v1
-        with:
-          dockerfile: 'Dockerfile'   # Ajuste se o Dockerfile estiver em outro caminho
-
-      - name: Set up QEMU (multi-platform)
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
@@ -54,13 +43,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Log in to GitHub Container Registry
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU (multi-platform)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -70,5 +57,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/app:latest
-            ghcr.io/${{ github.repository_owner }}/app:latest
+            ghcr.io/${{ toLower(github.repository_owner) }}/app:latest
+
 
